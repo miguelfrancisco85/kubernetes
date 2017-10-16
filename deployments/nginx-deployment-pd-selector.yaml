@@ -1,0 +1,36 @@
+piVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: nginx
+        disk: pd-deploy-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: "1"
+        volumeMounts:
+        - mountPath: /tmp
+          name: nginx-scratch
+        volumes:
+        - name: nginx-persistent-disk
+          mountpath: /tmp
+          #hostPath:
+          #path: "/mnt/disks/ssd0"
+      nodeSelector:
+        cloud.google.com/gke-local-ssd: "true"
+        hasdisk: pd-deploy-nginx
+      volumes:
+        - name: nginx-persistent-disk
+          gcePersistentDisk:
+        # This disk must already exist.
+            pdName: pd-deploy-nginx
+            fsType: ext4

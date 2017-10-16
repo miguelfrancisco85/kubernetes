@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: guestbook
+spec:
+  replicas: 2
+  selector:
+    name: guestbook
+  template:
+    metadata:
+      labels:
+        name: guestbook
+        version: "0.9"
+      name: guestbook
+    spec:
+      containers:
+      - imagePullPolicy: Always
+        image: gcr.io/support-trainer-vmucuge/guestbook:0.9
+        name: guestbook
+        env:
+        - name: MONGO_HOST
+          value: "mongodb-1" # Service name mongodb here
+        - name: MONGO_PORT
+          value: "27017"
+        - name: MONGO_DATABASE
+          value: "guestbook"
+        - name: MONGO_USER
+          value: "guestbook"
+        - name: MONGO_PASSWORD
+          value: "guestbook123"
+        # Checks when the container is ready.
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 3
+        # Checks if the container is still alive.
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8080

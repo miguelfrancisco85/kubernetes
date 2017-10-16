@@ -1,0 +1,304 @@
+[m[1mNAME[m
+    gcloud alpha container clusters create - create a cluster for running
+        containers
+
+[m[1mSYNOPSIS[m
+    [1mgcloud alpha container clusters create[m [4mNAME[m
+        [[1m--additional-zones[m=[4mZONE[m,[[4mZONE[m,...]] [[1m--async[m]
+        [[1m--cluster-ipv4-cidr[m=[4mCLUSTER_IPV4_CIDR[m]
+        [[1m--cluster-version[m=[4mCLUSTER_VERSION[m]
+        [[1m--disable-addons[m=[[4mDISABLE_ADDONS[m,...]] [[1m--disk-size[m=[4mDISK_SIZE[m]
+        [[1m--enable-autorepair[m] [[1m--enable-autoupgrade[m]
+        [[1m--no-enable-cloud-endpoints[m] [[1m--no-enable-cloud-logging[m]
+        [[1m--no-enable-cloud-monitoring[m] [[1m--enable-kubernetes-alpha[m]
+        [[1m--enable-legacy-authorization[m] [[1m--image-type[m=[4mIMAGE_TYPE[m]
+        [[1m--labels[m=[[4mKEY[m=[4mVALUE[m,...]] [[1m--local-ssd-count[m=[4mLOCAL_SSD_COUNT[m]
+        [[1m--machine-type[m=[4mMACHINE_TYPE[m, [1m-m[m [4mMACHINE_TYPE[m]
+        [[1m--max-nodes-per-pool[m=[4mMAX_NODES_PER_POOL[m] [[1m--network[m=[4mNETWORK[m]
+        [[1m--node-labels[m=[[4mNODE_LABEL[m,...]] [[1m--num-nodes[m=[4mNUM_NODES[m; default="3"]
+        [[1m--password[m=[4mPASSWORD[m] [[1m--preemptible[m] [[1m--scopes[m=[4mSCOPE[m,[[4mSCOPE[m,...]]
+        [[1m--service-account[m=[4mSERVICE_ACCOUNT[m] [[1m--subnetwork[m=[4mSUBNETWORK[m]
+        [[1m--tags[m=[4mTAG[m,[[4mTAG[m,...]]
+        [[1m--username[m=[4mUSERNAME[m, [1m-u[m [4mUSERNAME[m; default="admin"]
+        [[1m--zone[m=[4mZONE[m, [1m-z[m [4mZONE[m] [[1m--enable-autoscaling[m] [[1m--max-nodes[m=[4mMAX_NODES[m]
+        [[1m--min-nodes[m=[4mMIN_NODES[m] [[4mGLOBAL-FLAG ...[m]
+
+[m[1mDESCRIPTION[m
+    [1m(ALPHA)[m Create a cluster for running containers.
+
+[m[1mPOSITIONAL ARGUMENTS[m
+     [4mNAME[m
+        The name of this cluster.
+
+[m[1mFLAGS[m
+     [1m--additional-zones[m=[4mZONE[m,[[4mZONE[m,...]
+        The set of additional zones in which the specified node footprint
+        should be replicated. All zones must be in the same region as the
+        cluster's primary zone. If additional-zones is not specified, all nodes
+        will be in the cluster's primary zone.
+
+        Note that [1mNUM_NODES[m nodes will be created in each zone, such that if
+        you specify [1m--num-nodes=4[m and choose one additional zone, 8 nodes will
+        be created.
+
+        Multiple locations can be specified, separated by commas. For example:
+
+            $ gcloud alpha container clusters create example-cluster \
+                --zone us-central1-a \
+                --additional-zones us-central1-b,us-central1-c
+
+     [1m--async[m
+        Don't wait for the operation to complete.
+
+     [1m--cluster-ipv4-cidr[m=[4mCLUSTER_IPV4_CIDR[m
+        The IP address range for the pods in this cluster in CIDR notation
+        (e.g. 10.0.0.0/14). Due to kube-proxy limitations, this range must be a
+        subset of the 10.0.0.0/8 space. Defaults to server-specified.
+
+     [1m--cluster-version[m=[4mCLUSTER_VERSION[m
+        The Kubernetes version to use for the master and nodes. Defaults to
+        server-specified.
+
+        The default Kubernetes version is available using the following
+        command.
+
+            $ gcloud container get-server-config
+
+     [1m--disable-addons[m=[[4mDISABLE_ADDONS[m,...]
+        List of cluster addons to disable. Options are HttpLoadBalancing,
+        HorizontalPodAutoscaling. [4mDISABLE_ADDONS[m must be one of:
+        [1mHttpLoadBalancing[m, [1mHorizontalPodAutoscaling[m.
+
+     [1m--disk-size[m=[4mDISK_SIZE[m
+        Size in GB for node VM boot disks. Defaults to 100GB.
+
+     [1m--enable-autorepair[m
+        Sets autorepair feature for a cluster's default node-pool(s).
+
+            $ gcloud alpha container clusters create example-cluster \
+                --enable-autorepair
+
+        See https://cloud.google.com/container-engine/docs/node-auto-repair for
+        more info.
+
+     [1m--enable-autoupgrade[m
+        Sets autoupgrade feature for a cluster's default node-pool(s).
+
+            $ gcloud alpha container clusters create example-cluster \
+                --enable-autoupgrade
+
+        See https://cloud.google.com/container-engine/docs/node-managament for
+        more info.
+
+     [1m--enable-cloud-endpoints[m
+        Automatically enable Google Cloud Endpoints to take advantage of API
+        management features. Enabled by default, use
+        [1m--no-enable-cloud-endpoints[m to disable.
+
+     [1m--enable-cloud-logging[m
+        Automatically send logs from the cluster to the Google Cloud Logging
+        API. Enabled by default, use [1m--no-enable-cloud-logging[m to disable.
+
+     [1m--enable-cloud-monitoring[m
+        Automatically send metrics from pods in the cluster to the Google Cloud
+        Monitoring API. VM metrics will be collected by Google Compute Engine
+        regardless of this setting. Enabled by default, use
+        [1m--no-enable-cloud-monitoring[m to disable.
+
+     [1m--enable-kubernetes-alpha[m
+        Enable Kubernetes alpha features on this cluster. Selecting this option
+        will result in the cluster having all Kubernetes alpha API groups and
+        features turned on. Cluster upgrades (both manual and automatic) will
+        be disabled and the cluster will be automatically deleted after 30
+        days.
+
+        Alpha clusters are not covered by the Container Engine SLA and should
+        not be used for production workloads.
+
+     [1m--enable-legacy-authorization[m
+        Enables the legacy ABAC authentication for the cluster. See
+        https://cloud.google.com/container-engine/docs/legacyabac for more
+        info.
+
+     [1m--image-type[m=[4mIMAGE_TYPE[m
+        The image type to use for the cluster. Defaults to server-specified.
+
+        Image Type specifies the base OS that the nodes in the cluster will run
+        on. If an image type is specified, that will be assigned to the cluster
+        and all future upgrades will use the specified image type. If it is not
+        specified the server will pick the default image type.
+
+        The default image type and the list of valid image types are available
+        using the following command.
+
+            $ gcloud container get-server-config
+
+     [1m--labels[m=[[4mKEY[m=[4mVALUE[m,...]
+        Labels to apply to the Google Cloud resources in use by the Container
+        Engine cluster. These are unrelated to Kubernetes labels. Example:
+
+            $ gcloud alpha container clusters create example-cluster \
+                --labels=label_a=value1,label_b=,label_c=value3
+
+     [1m--local-ssd-count[m=[4mLOCAL_SSD_COUNT[m
+        The number of local SSD disks to provision on each node.
+
+        Local SSDs have a fixed 375 GB capacity per device. The number of disks
+        that can be attached to an instance is limited by the maximum number of
+        disks available on a machine, which differs by compute zone. See
+        https://cloud.google.com/compute/docs/disks/local-ssd for more
+        information.
+
+     [1m--machine-type[m=[4mMACHINE_TYPE[m, [1m-m[m [4mMACHINE_TYPE[m
+        The type of machine to use for nodes. Defaults to n1-standard-1.
+
+     [1m--max-nodes-per-pool[m=[4mMAX_NODES_PER_POOL[m
+        The maximum number of nodes to allocate per default initial node pool.
+        Container Engine will automatically create enough nodes pools such that
+        each node pool contains less than --max-nodes-per-pool nodes. Defaults
+        to 1000 nodes, but can be set as low as 100 nodes per pool on initial
+        create.
+
+     [1m--network[m=[4mNETWORK[m
+        The Compute Engine Network that the cluster will connect to. Google
+        Container Engine will use this network when creating routes and
+        firewalls for the clusters. Defaults to the 'default' network.
+
+     [1m--node-labels[m=[[4mNODE_LABEL[m,...]
+        Applies the given kubernetes labels on all nodes in the new node-pool.
+        Example:
+
+            $ gcloud alpha container clusters create example-cluster \
+                --node-labels=label-a=value1,label-2=value2
+
+        New nodes, including ones created by resize or recreate, will have
+        these labels on the kubernetes API node object and can be used in
+        nodeSelectors. See http://kubernetes.io/docs/user-guide/node-selection/
+        for examples.
+
+     [1m--num-nodes[m=[4mNUM_NODES[m; default="3"
+        The number of nodes to be created in each of the cluster's zones.
+
+     [1m--password[m=[4mPASSWORD[m
+        The password to use for cluster auth. Defaults to a server-specified
+        randomly-generated string.
+
+     [1m--preemptible[m
+        Create nodes using preemptible VM instances in the new cluster.
+
+            $ gcloud alpha container clusters create example-cluster \
+                --preemptible
+
+        New nodes, including ones created by resize or recreate, will use
+        preemptible VM instances. See
+        https://cloud.google.com/container-engine/docs/preemptible-vm for more
+        information on how to use Preemptible VMs with Container Engine.
+
+     [1m--scopes[m=[4mSCOPE[m,[[4mSCOPE[m,...]
+        Specifies scopes for the node instances. The project's default service
+        account is used. Examples:
+
+            $ gcloud alpha container clusters create example-cluster \
+                --scopes https://www.googleapis.com/auth/devstorage.read_only
+
+            $ gcloud alpha container clusters create example-cluster \
+                --scopes bigquery,storage-rw,compute-ro
+
+        Multiple SCOPEs can specified, separated by commas. The scopes
+        necessary for the cluster to function properly (compute-rw,
+        storage-ro), are always added, even if not explicitly specified.
+
+        SCOPE can be either the full URI of the scope or an alias. Available
+        aliases are:
+
+          Alias                 URI
+          bigquery              https://www.googleapis.com/auth/bigquery
+          cloud-platform        https://www.googleapis.com/auth/cloud-platform
+          cloud-source-repos    https://www.googleapis.com/auth/source.full_control
+          cloud-source-repos-ro https://www.googleapis.com/auth/source.read_only
+          compute-ro            https://www.googleapis.com/auth/compute.readonly
+          compute-rw            https://www.googleapis.com/auth/compute
+          datastore             https://www.googleapis.com/auth/datastore
+          default               https://www.googleapis.com/auth/cloud.useraccounts.readonly
+                                https://www.googleapis.com/auth/devstorage.read_only
+                                https://www.googleapis.com/auth/logging.write
+                                https://www.googleapis.com/auth/monitoring.write
+                                https://www.googleapis.com/auth/pubsub
+                                https://www.googleapis.com/auth/service.management.readonly
+                                https://www.googleapis.com/auth/servicecontrol
+                                https://www.googleapis.com/auth/trace.append
+          logging-write         https://www.googleapis.com/auth/logging.write
+          monitoring            https://www.googleapis.com/auth/monitoring
+          monitoring-write      https://www.googleapis.com/auth/monitoring.write
+          service-control       https://www.googleapis.com/auth/servicecontrol
+          service-management    https://www.googleapis.com/auth/service.management.readonly
+          sql                   https://www.googleapis.com/auth/sqlservice
+          sql-admin             https://www.googleapis.com/auth/sqlservice.admin
+          storage-full          https://www.googleapis.com/auth/devstorage.full_control
+          storage-ro            https://www.googleapis.com/auth/devstorage.read_only
+          storage-rw            https://www.googleapis.com/auth/devstorage.read_write
+          taskqueue             https://www.googleapis.com/auth/taskqueue
+          useraccounts-ro       https://www.googleapis.com/auth/cloud.useraccounts.readonly
+          useraccounts-rw       https://www.googleapis.com/auth/cloud.useraccounts
+          userinfo-email        https://www.googleapis.com/auth/userinfo.email
+
+     [1m--service-account[m=[4mSERVICE_ACCOUNT[m
+        The Google Cloud Platform Service Account to be used by the node VMs.
+        If no Service Account is specified, the "default" service account is
+        used.
+
+     [1m--subnetwork[m=[4mSUBNETWORK[m
+        The name of the Google Compute Engine subnetwork
+        (https://cloud.google.com/compute/docs/subnetworks) to which the
+        cluster is connected. If specified, the cluster's network must be a
+        "custom subnet" network.
+
+     [1m--tags[m=[4mTAG[m,[[4mTAG[m,...]
+        Applies the given Compute Engine tags (comma separated) on all nodes in
+        the new node-pool. Example:
+
+            $ gcloud alpha container clusters create example-cluster \
+                --tags=tag1,tag2
+
+        New nodes, including ones created by resize or recreate, will have
+        these tags on the Compute Engine API instance object and can be used in
+        firewall rules. See
+        https://cloud.google.com/sdk/gcloud/reference/compute/firewall-rules/create
+        for examples.
+
+     [1m--username[m=[4mUSERNAME[m, [1m-u[m [4mUSERNAME[m; default="admin"
+        The user name to use for cluster auth.
+
+     [1m--zone[m=[4mZONE[m, [1m-z[m [4mZONE[m
+        The compute zone (e.g. us-central1-a) for the cluster. Overrides the
+        default [1mcompute/zone[m property value for this command invocation.
+
+    Cluster autoscaling:
+
+     [1m--enable-autoscaling[m
+        Enables autoscaling for a node pool.
+
+        Enables autoscaling in the node pool specified by --node-pool or the
+        default node pool if --node-pool is not provided.
+
+     [1m--max-nodes[m=[4mMAX_NODES[m
+        Maximum number of nodes in the node pool.
+
+        Maximum number of nodes to which the node pool specified by --node-pool
+        (or default node pool if unspecified) can scale. Ignored unless
+        --enable-autoscaling is also specified.
+
+     [1m--min-nodes[m=[4mMIN_NODES[m
+        Minimum number of nodes in the node pool.
+
+        Minimum number of nodes to which the node pool specified by --node-pool
+        (or default node pool if unspecified) can scale. Ignored unless
+        --enable-autoscaling is also specified.
+
+[m[1mGLOBAL FLAGS[m
+    Run [1m$ gcloud help[m for a description of flags available to all commands.
+
+[m[1mNOTES[m
+    This command is currently in ALPHA and may change without notice.
+
+[m

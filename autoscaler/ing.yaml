@@ -1,0 +1,8 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ing-autoscaler
+spec:
+  backend:
+    serviceName: svc-autoscaler
+    servicePort: 80

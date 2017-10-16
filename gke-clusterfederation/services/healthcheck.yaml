@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-healthcheck
+  labels:
+    app: nginx-healthcheck
+spec:
+#    clusterIP:
+    type: NodePort
+    selector:
+      app: nginx-healthcheck
+    ports:
+      - nodePort: 32112
+        port: 80
+        protocol: TCP
+        targetPort: 80
+        name: http

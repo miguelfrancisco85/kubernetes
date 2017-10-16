@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: "1"
+        volumeMounts:
+        - mountPath: /tmp
+          name: nginx-scratch
+        - mountPath: /var/www/html
+          name: pd-disk
+      volumes:
+      - name: nginx-scratch
+        hostPath:
+          path: "/mnt/disks/ssd0"
+      - name: pd-disk
+        gcePersistentDisk:
+          pdName: pd-gke-europe-zoneb
+          fsType: ext4 
+      nodeSelector:
+        hasdisk: pd-deploy-nginx

@@ -1,0 +1,18 @@
+FROM python:3.4
+
+ENV PYTHONUNBUFFERED 1
+ENV MONGO_HOST ""
+ENV MONGO_PORT ""
+ENV MONGO_DATABASE ""
+ENV MONGO_USER ""
+ENV MONGO_PASSWORD ""
+
+ADD . /src
+
+WORKDIR /src
+
+RUN pip install -r requirements.txt
+
+EXPOSE 8080
+
+CMD python app.py

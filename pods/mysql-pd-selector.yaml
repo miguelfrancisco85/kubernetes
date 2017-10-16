@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql
+  labels:
+    name: mysql
+spec:
+  nodeSelector:
+    attachdisk: pd-disk-test
+  containers:
+    - resources:
+        limits:
+          cpu: 100m
+      image: mysql:5.6
+      name: mysql
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          # Change this password!
+          value: P4$$W05D
+        - name: MYSQL_DATABASE
+          value: training
+        - name: MYSQL_USER
+          value: trainer
+        - name: MYSQL_PASSWD
+          value: trainEr2017
+      ports:
+        - containerPort: 3306
+          name: mysql
+      volumeMounts:
+          # This name must match the volumes.name below.
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+  volumes:
+    - name: mysql-persistent-storage
+      gcePersistentDisk:
+        # This disk must already exist.
+        pdName: pd-disk-test
+        fsType: ext4

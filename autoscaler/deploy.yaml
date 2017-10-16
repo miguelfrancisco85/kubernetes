@@ -1,0 +1,32 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: autoscaler
+spec:
+  replicas: 500
+  template:
+    metadata:
+      labels:
+        app: autoscaler
+        version: v1
+        environment: autoscaler
+        tier: fe
+    spec:
+      containers:
+      - name: autoscaler
+        image: eu.gcr.io/eh-security/autoscaler
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          periodSeconds: 1
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 10

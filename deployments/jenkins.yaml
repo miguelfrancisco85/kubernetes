@@ -1,0 +1,17 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        run: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: eu.gcr.io/support-trainer-vmucuge/jenkins
+        ports:
+        - containerPort: 8080

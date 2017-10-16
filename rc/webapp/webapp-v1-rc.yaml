@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: web
+spec:
+  replicas: 6
+  template:
+    metadata:
+      labels:
+        app: web
+        version: v1
+        environment: dev
+        tier: fe      
+    spec:
+      containers:
+      - name: webapp-v1
+        imagePullPolicy: Always
+        image: gcr.io/support-trainer-vmucuge/webapp:latest
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /ok
+            port: 8080
+          periodSeconds: 1
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 10

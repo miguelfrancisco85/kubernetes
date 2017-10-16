@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: nginx-healthcheck
+  labels:
+    app: nginx-healthcheck
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx-healthcheck
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx-healthcheck
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1

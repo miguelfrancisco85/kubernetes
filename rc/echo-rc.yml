@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rc-echo-v2
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: echo
+        version: v2
+    spec:
+      containers:
+      - name: echo-v2
+        image: eu.gcr.io/support-trainer-vmucuge/echo:v2

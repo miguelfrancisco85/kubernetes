@@ -1,0 +1,58 @@
+piVersion: v1
+kind: Service
+metadata:
+ name: mainboard
+ #  annotations:
+ #   service.alpha.kubernetes.io/app-protocols: '{"https-port":"HTTPS"}'
+ labels:
+   name: mainboard
+spec:
+ # if your cluster supports it, uncomment the following to automatically create
+ # an external load-balanced IP for the frontend service.
+ # type: LoadBalancer
+ type: NodePort
+ # LoadBalancer: 10.10.18.30
+ ports:
+   # the port that this service should serve on
+   - port: 80
+     nodePort: 31080
+     targetPort: 80
+     name: http-port
+     protocol: TCP
+   - port: 443
+     nodePort: 31443
+     targetPort: 443
+     name: https-port
+     protocol: TCP
+ selector:
+   name: mainboard
+   
+---
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+ name: mainboard
+ labels:
+   name: mainboard
+spec:
+ replicas: 2
+ selector:
+   name: mainboard
+ template:
+   metadata:
+     labels:
+       name: mainboard
+   spec:
+   #  nodeSelector:
+   #    nodetype: app
+     containers:
+     - name: mainboard
+       image: gcr.io/support-trainer-vmucuge/nginx
+       imagePullPolicy: Always 
+       livenessProbe:
+         httpGet:
+           path: /
+           port: https-port
+         initialDelaySeconds: 3
+         periodSeconds: 3

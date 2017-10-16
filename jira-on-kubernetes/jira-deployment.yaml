@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: jira
+  name: jira
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jira
+      name: jira
+    spec:
+      containers:
+        - name: jira
+          image: "cptactionhank/atlassian-jira"
+          resources:
+            requests:
+              cpu: "2"
+              memory: "2G"
+          volumeMounts:
+            - name: "jira-home"
+              mountPath: /opt/jira-home
+      volumes:
+        - name: "jira-home"
+          gcePersistentDisk:
+            pdName: jira-us-us-east1-c
+            fsType: ext4

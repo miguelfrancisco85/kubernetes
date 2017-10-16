@@ -1,0 +1,10 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: mainboard
+spec:
+ tls:
+ - secretName: nginx-ssl
+ backend:
+   serviceName: mainboard
+   servicePort: https-port

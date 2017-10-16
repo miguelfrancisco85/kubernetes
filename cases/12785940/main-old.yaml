@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: mainboard
+ #  annotations:
+ #   service.alpha.kubernetes.io/app-protocols: '{"https-port":"HTTPS"}'
+ labels:
+   name: mainboard
+spec:
+ # if your cluster supports it, uncomment the following to automatically create
+ # an external load-balanced IP for the frontend service.
+ # type: LoadBalancer
+ type: NodePort
+ # LoadBalancer: 10.10.18.30
+ ports:
+   # the port that this service should serve on
+   - port: 80
+     nodePort: 31080
+     targetPort: 8080
+     name: http-port
+     protocol: TCP
+   - port: 443
+     nodePort: 31443
+     targetPort: 443
+     name: https-port
+     protocol: TCP
+ selector:
+   name: mainboard
+   
+---
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+ name: mainboard
+ labels:
+   name: mainboard
+spec:
+ replicas: 2
+ selector:
+   name: mainboard
+ template:
+   metadata:
+     labels:
+       name: mainboard
+   spec:
+   #  nodeSelector:
+   #    nodetype: app
+     containers:
+     - name: nginx-mainboard
+       image: eu.gcr.io/support-trainer-vmucuge/nginx
+       imagePullPolicy: Always 
+       livenessProbe:
+         httpGet:
+           path: /healthz
+           port: 443
+           httpHeaders:
+             - name: X-Custom-Header
+               value: Awesome
+         initialDelaySeconds: 3
+         periodSeconds: 3 
+       env:
+         - name: DB_PORT_6379_TCP_ADDR
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: redis.addr
+         - name: DB_PORT_6379_TCP_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: redis.port
+         - name: LOGIN_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: login.addrport
+         - name: MENU_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: menu.addrport
+         - name: SETTING_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: setting.addrport
+         - name: DEFIESETTING_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: defiesetting.addrport
+         - name: USER_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: user.addrport
+         - name: PROFILE_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: profile.addrport
+         - name: INVENTORY_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: inventory.addrport
+         - name: CUSTOMER_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: customer.addrport
+         - name: VENDOR_ADDR_AND_PORT
+           valueFrom:
+             configMapKeyRef:
+               name: mainboard-config
+               key: vendor.addrport
+         - name: QUOTE_ADDR_AND_PORT
+           valueFrom:
