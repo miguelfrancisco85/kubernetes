@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nginx-backend
+  name: tcp-lb
+spec:
+  ports:
+  - nodePort: 31986
+    port: 8080
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx-backend
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: nginx-backend
+  name: my-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: nginx-backend
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: nginx-backend
+    spec:
+      containers:
+      - image: nginx
+        name: my-nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
