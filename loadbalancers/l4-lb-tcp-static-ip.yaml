@@ -1,0 +1,43 @@
+# gcloud compute addresses create k8s-external-ip --region=europe-west3
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nginx
+  name: tcp-lb
+spec:
+  ports:
+  - nodePort: 31986
+    port: 8080
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+  type: LoadBalancer
+  #the external IP has to be regional
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  loadBalancerIP: 35.198.143.176
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: nginx
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
