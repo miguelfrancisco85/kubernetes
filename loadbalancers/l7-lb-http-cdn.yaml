@@ -1,0 +1,71 @@
+### you need to reserve an static IP
+#  gcloud compute addresses create ip-gke-lb-cdn --global
+### you need the namespace mediawiki
+#  kubectl create namespace mediawiki
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: mediawiki
+  name: mediawiki-cdn-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mediawiki-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mediawiki-app
+    spec:
+      containers:
+      - name: mediawiki-app-container
+        image: mediawiki
+        ports:
+        - containerPort: 80
+---
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  namespace: mediawiki
+  name: mediawiki-cdn-backend-config
+spec:
+  cdn:
+    enabled: true
+    cachePolicy:
+      includeHost: true
+      includeProtocol: true
+      includeQueryString: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: mediawiki
+  name: mediawiki-cdn-service
+  labels:
+    app: mediawiki-app
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"80":"mediawiki-cdn-backend-config"}}'
+spec:
+  type: NodePort
+  selector:
+    app: mediawiki-app
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: mediawiki
+  name: mediawiki-cdn-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "ip-gke-lb-cdn"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: mediawiki-cdn-service
+          servicePort: 80
